@@ -223,150 +223,6 @@ char	*ft_strrchr(const char *s, int c)
 	return (NULL);
 }
 
-int personnage_verif(char *str)
-{
-    int personnage;
-    int i;
-
-    i = 0;
-    personnage = 0;
-    while (str[i])
-    {
-        if (str[i] == 'P')
-            personnage++;
-        i++;
-    }
-    if (personnage == 0)
-    {
-        printf("invalid map (0 personnage)\n");
-        return (1);
-    }
-    else if (personnage != 1)
-    {
-        printf("invalid map (too many personnages)\n");
-        return (1);
-    }
-    return (0);
-}
-
-int exit_verif(char *str)
-{
-    int exit;
-    int i;
-
-    i = 0;
-    exit = 0;
-    while (str[i])
-    {
-        if (str[i] == 'E')
-            exit++;
-        i++;
-    }
-    if (exit == 0)
-    {
-        printf("invalid map (0 exit)\n");
-        return (1);
-    }
-    else if (exit != 1)
-    {
-        printf("invalid map (too many exit)\n");
-        return (1);
-    }
-    return (0);
-}
-
-int collectible_verif(char *str)
-{
-    int collectible;
-    int i;
-
-    i = 0;
-    collectible = 0;
-    while (str[i])
-    {
-        if (str[i] == 'C')
-            collectible++;
-        i++;
-    }
-    if (collectible == 0)
-    {
-        printf("invalid map (0 collectible)\n");
-        return (1);
-    }
-    return (0);
-}
-
-int lenmap(char *str)
-{
-    int i;
-    int count;
-    int j;
-    int count2;
-
-    i = 0;
-    j = ft_strlen(str);
-    count = 0;
-    count2 = 0;
-    while (str[i] != '\n')
-    {
-        if (str[i] == '1')
-            count++;
-        i++;
-    }
-    while (str[j] != '\n')
-    {
-        if (str[j] == '1')
-            count2++;
-        j--;
-    }
-    if (i != count || i != count2)
-        return (-1);
-    return (count);
-}
-
-int middlenmap(char *str)
-{
-    int i;
-    int count;
-    int nl;
-
-    i = 0;
-    count = 0;
-    nl = 0;
-    while (str[i])
-    {
-        if (str[i] == '\n')
-        {
-            if (str[i - 1] == '1' && str[i + 1] == '1')
-                count++;
-            nl++;
-        }
-        i++;
-    }
-    if (nl != count)
-        return (-1);
-    return (count);
-}
-
-int wall_verif(char *str)
-{
-    int wall;
-    int i;
-    int width;
-    int height;
-
-    i = 0;
-    wall = 0;
-    width = lenmap(str);
-    height = middlenmap(str);
-    if (width == -1 || height == -1)
-    {
-        printf("invalid map (map not closed)\n");
-        return (1);
-    }
-    return (0);
-}
-
 int char_verif(char *str)
 {
     int i;
@@ -376,57 +232,13 @@ int char_verif(char *str)
     count = 0;
     while (str[i])
     {
-        if (str[i] != 'C' && str[i] != 'P' && str[i] != 'E' && str[i] != '0' 
-                && str[i] != '1' && str[i] != '\n')
+        if (str[i] >= '9' && str[i] <= '0' && str[i] != ' ')
                 count++;
         i++;
     }
     if (count != 0)
-        printf("invalid map (unknown char)");
+        printf("invalid design (unknown char)");
     return (count);
-}
-
-int playable_map(int i, int j, char *str)
-{
-    int ret;
-    int boolean;
-
-    ret = 1;
-    boolean = 1;
-    while (boolean != 0)
-    {
-        if (str[j + 1] == '0')
-            j = j + 1;
-        else if (str[j - 1] == '0')
-            j = j - 1;
-        else if (str[j - i] == '0')
-            j = j - i;
-        else if (str[j + i] == '0')
-            j = j + i;
-        else
-            boolean = 0;
-        ret = 0;
-    }
-    return (ret);
-}
-
-int playable_map_verif(char *str)
-{
-    int i;
-    int j;
-    int error;
-
-    i = 0;
-    error = 0;
-    while (str[i] == '1')
-        i++;
-    j = 0;
-    while (str[j] != 'P')
-       j++;
-    error = playable_map(i, j, str);
-    if (error != 0)
-        printf("invalid map (map is not finnishable)");
-    return (error);
 }
 
 char *verif_map(int fd)
@@ -443,12 +255,7 @@ char *verif_map(int fd)
         str = ft_strjoin(str, line);
         line = get_next_line(fd);
     }
-    verif += exit_verif(str);
-    verif += personnage_verif(str);
-    verif += collectible_verif(str);
-    verif += wall_verif(str);
     verif += char_verif(str);
-    verif += playable_map_verif(str);
     if (verif != 0)
         return (NULL);
     return (str);
