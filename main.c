@@ -237,7 +237,7 @@ int char_verif(char *str)
         i++;
     }
     if (count != 0)
-        printf("invalid design (unknown char)");
+        ft_printf("invalid design (unknown char)");
     return (count);
 }
 
@@ -246,14 +246,17 @@ char *verif_map(int fd)
     int     verif;
     char    *str;
     char    *line;
+	int		count;
 
     verif = 0;
+	count = 0;
     str = ft_calloc(1);
     line = get_next_line(fd);
     while (line != NULL)
     {
         str = ft_strjoin(str, line);
         line = get_next_line(fd);
+		count++;
     }
     verif += char_verif(str);
     if (verif != 0)
@@ -261,20 +264,42 @@ char *verif_map(int fd)
     return (str);
 }
 
-int verif_extension(char *filename)
+void	help_printer(char *exec)
+{
+	ft_printf("===============================HELP===============================\n");
+	ft_printf("|| Name of program: %s\t\t\t\t\t||\n", (char *)&exec[2]);
+	ft_printf("|| launch program : %s <design.fdf>\t\t\t||\n", exec);
+	ft_printf("|| print help     : \"%s -h\" or \"%s --help\"\t\t||\n", exec, exec);
+	ft_printf("|| Control        :\t\t\t\t\t\t||\n");
+	ft_printf("||\t  - esc  : exit the program\t\t\t\t||\n");
+	ft_printf("==================================================================\n");
+}
+
+int verif_extension(char *execname, char *filename)
 {
     char *extension;
     int verif;
+	char	*exep;
 
     extension = ".fdf";
     verif = ft_strcmp(ft_strrchr(filename, '.'), extension);
     if (verif == 0)
         return (0);
+    else if (ft_strcmp(filename, "--help") == 0 || ft_strcmp(filename, "-h") == 0)
+		help_printer(execname);
+	else if (ft_strrchr(filename, '.') == NULL)
+		ft_printf("Error ! no extension given");
     else
-    {
-        printf("bad file extension\n");
-        return (1);
-    }
+        ft_printf("Error ! bad file extension\n");
+	return (1);
+}
+
+void arg_error(int argc)
+{
+	if (argc == 1)
+		ft_printf("not enought arguments\n");
+	else
+		ft_printf("too many arguments (%d but just 1 needed)\n", (argc - 1));
 }
 
 int main(int argc, char **argv)
@@ -285,13 +310,13 @@ int main(int argc, char **argv)
 
     if (argc == 2)
     {
-        verif = verif_extension(argv[1]);
+        verif = verif_extension(argv[0], argv[1]);
         if (verif == 0)
         {
             fd = open(argv[1], O_RDONLY);
             if (fd <= 0)
             {
-                printf("map doesn\'t exist\n");
+                ft_printf("map doesn\'t exist\n");
                 return (1);
             }
             map = verif_map(fd);
@@ -301,6 +326,6 @@ int main(int argc, char **argv)
         }
         return (0);
     }
-    printf("missing arguments or too many\n");
-    return (1);
+    arg_error(argc);
+	return (1);
 }
