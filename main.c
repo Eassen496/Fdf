@@ -317,13 +317,13 @@ int main(int argc, char **argv)
             fd = open(argv[1], O_RDONLY);
             if (fd <= 0)
             {
-                printf("map doesn\'t exist\n");
+                printf("design doesn\'t exist\n");
                 return (1);
             }
             map = verif_map(fd);
             if (!map)
                 return (1);
-            graphical_main((char *)&argv[0][2], map);
+            //graphical_main((char *)&argv[0][2], map);
         }
         return (0);
     }
