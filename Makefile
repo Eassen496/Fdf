@@ -25,13 +25,13 @@ so_long: ${NAME}
 ${NAME} : ${OBJS}
 		ar rc ${NAME} ${OBJS}
 
-test :
-	gcc design.c -Werror -Wextra -Wall ./MLX42/libmlx42.a -I include -lglfw -L "/Users/ale-roux/.brew/opt/glfw/lib/" -o test
+test : clean
+	gcc main.c design.c -Werror -Wextra -Wall ./MLX42/libmlx42.a -I include -lglfw -L "/Users/ale-roux/.brew/opt/glfw/lib/" -o test
 
 rt : clean test
 
 clean :
-		rm -f ${OBJS} test 
+		rm -f ${OBJS} test
 
 fclean : clean
 		rm -f ${NAME}

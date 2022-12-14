@@ -237,7 +237,7 @@ int char_verif(char *str)
         i++;
     }
     if (count != 0)
-        ft_printf("invalid design (unknown char)");
+        printf("invalid design (unknown char)");
     return (count);
 }
 
@@ -266,20 +266,19 @@ char *verif_map(int fd)
 
 void	help_printer(char *exec)
 {
-	ft_printf("===============================HELP===============================\n");
-	ft_printf("|| Name of program: %s\t\t\t\t\t||\n", (char *)&exec[2]);
-	ft_printf("|| launch program : %s <design.fdf>\t\t\t||\n", exec);
-	ft_printf("|| print help     : \"%s -h\" or \"%s --help\"\t\t||\n", exec, exec);
-	ft_printf("|| Control        :\t\t\t\t\t\t||\n");
-	ft_printf("||\t  - esc  : exit the program\t\t\t\t||\n");
-	ft_printf("==================================================================\n");
+	printf("===============================HELP===============================\n");
+	printf("|| Name of program: %s\t\t\t\t\t||\n", (char *)&exec[2]);
+	printf("|| launch program : %s <design.fdf>\t\t\t||\n", exec);
+	printf("|| print help     : \"%s -h\" or \"%s --help\"\t\t||\n", exec, exec);
+	printf("|| Control        :\t\t\t\t\t\t||\n");
+	printf("||\t  - esc  : exit the program\t\t\t\t||\n");
+	printf("==================================================================\n");
 }
 
 int verif_extension(char *execname, char *filename)
 {
     char *extension;
     int verif;
-	char	*exep;
 
     extension = ".fdf";
     verif = ft_strcmp(ft_strrchr(filename, '.'), extension);
@@ -288,19 +287,21 @@ int verif_extension(char *execname, char *filename)
     else if (ft_strcmp(filename, "--help") == 0 || ft_strcmp(filename, "-h") == 0)
 		help_printer(execname);
 	else if (ft_strrchr(filename, '.') == NULL)
-		ft_printf("Error ! no extension given");
+		printf("Error ! no extension given");
     else
-        ft_printf("Error ! bad file extension\n");
+        printf("Error ! bad file extension\n");
 	return (1);
 }
 
 void arg_error(int argc)
 {
 	if (argc == 1)
-		ft_printf("not enought arguments\n");
+		printf("not enought arguments\n");
 	else
-		ft_printf("too many arguments (%d but just 1 needed)\n", (argc - 1));
+		printf("too many arguments (%d but just 1 needed)\n", (argc - 1));
 }
+
+int32_t	graphical_main(char *name, char *str);
 
 int main(int argc, char **argv)
 {
@@ -316,13 +317,13 @@ int main(int argc, char **argv)
             fd = open(argv[1], O_RDONLY);
             if (fd <= 0)
             {
-                ft_printf("map doesn\'t exist\n");
+                printf("map doesn\'t exist\n");
                 return (1);
             }
             map = verif_map(fd);
             if (!map)
                 return (1);
-            //graphical_main(map);
+            graphical_main((char *)&argv[0][2], map);
         }
         return (0);
     }

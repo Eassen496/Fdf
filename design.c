@@ -12,6 +12,20 @@ void	make_draw3(mlx_t *mlx, mlx_image_t *g_img, int x, float y);
 
 mlx_image_t	*g_img;
 
+char	*ft_strcpy(char *destination, char *source)
+{
+	int	i;
+
+	i = 0;
+	while (source[i])
+	{
+		destination[i] = source[i];
+		i++;
+	}
+	destination[i] = '\0';
+	return (destination);
+}
+
 void	hook(void *param)
 {
 	mlx_t	*mlx;
@@ -20,7 +34,7 @@ void	hook(void *param)
 	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
     {
         mlx_close_window(mlx);
-        printf("Escaped pressed");
+        printf("Escape pressed");
     }
 }
 
@@ -115,7 +129,8 @@ char	*next_int(char *str)
 		if (str[i] <= '9' && str[i] >= '0')
 			return (&str[i]);
 		i++;
-	}	
+	}
+	return (NULL);
 }
 
 int	line_len(char *str)
@@ -140,7 +155,6 @@ int	line_len(char *str)
 int *line_creator(char *str)
 {
 	int			i;
-	int 		tmp;
 	static char *str2 = NULL;
 	int			*tab;
 
@@ -148,11 +162,13 @@ int *line_creator(char *str)
 	if (!str2)
 		ft_strcpy(str2, str);
 	tab = malloc(line_len(str) * sizeof(int));
-	while (str2 != '\n' && str2[i])
+	while (str2[i] != '\n' && str2[i])
 	{
 		tab[i] = atoi(str2);
 		i++;
 		str2 = next_int(str);
+		if (!str2)
+			break ;
 	}
 	return (tab);
 }
@@ -161,7 +177,6 @@ int	**tab_creator(char *str)
 {
 	int	i;
 	int tablen;
-	int	elem;
 	int	**tab;
 
 	i = 0;
@@ -193,13 +208,13 @@ int32_t	graphical_main(char *name, char *str)
 	mlx_terminate(mlx);
 	return (EXIT_SUCCESS);
 }
-
+/*
 int main(int argc, char **argv)
 {
-
     if (argc == 2)
     {
-        graphical_main((char *)&argv[0][2]);
+        graphical_main((char *)&argv[0][2], "Hello");
     }
     return (0);
 }
+*/
