@@ -38,69 +38,9 @@ void	hook(void *param)
     }
 }
 
-void	make_draw1(mlx_t *mlx, mlx_image_t *g_img, int x, float y)
+int	draw(mlx_t *mlx, mlx_image_t *g_img, int x, int y)
 {
-	int	pass;
 
-	pass = 0;
-	while (pass < 600)
-	{
-		mlx_image_to_window(mlx, g_img, x, y);
-		x++;
-		pass++;
-		y = y + 0.5;
-	}
-}
-
-void	make_draw4(mlx_t *mlx, mlx_image_t *g_img, int x, float y)
-{
-	int tmp;
-	int pass;
-
-	pass = 0;
-	while (pass < 600)
-	{	
-		if ((tmp * 2) % 25 == 0)
-			make_draw3(mlx, g_img, x, y);
-		mlx_image_to_window(mlx, g_img, x, y);
-		x++;
-		y = y + 0.5;
-		tmp = (int)y;
-		pass++;
-	}
-	if ((tmp * 2) % 25 == 0)
-			make_draw3(mlx, g_img, x, y);
-}
-
-void	make_draw3(mlx_t *mlx, mlx_image_t *g_img, int x, float y)
-{
-	int	pass;
-
-	pass = 0;
-	while (pass < 50)
-	{
-		mlx_image_to_window(mlx, g_img, x, y);
-		x++;
-		pass++;
-		y = y - 0.5;
-	}
-}
-
-void	make_draw2(mlx_t *mlx, mlx_image_t *g_img, int x, float y)
-{
-	int	pass;
-
-	pass = 0;
-	while (pass < 500)
-	{
-		if (x % 25 == 0)
-			make_draw4(mlx, g_img, x, y);
-		mlx_image_to_window(mlx, g_img, x, y);
-		x++;
-		pass++;
-		y = y - 0.5;
-	}
-	printf("%d\n", pass);
 }
 
 int	ft_tablen(char *str)
@@ -119,102 +59,137 @@ int	ft_tablen(char *str)
 	return (ret);
 }
 
-char	*next_int(char *str)
-{
-	int			i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] <= '9' && str[i] >= '0')
-			return (&str[i]);
-		i++;
-	}
-	return (NULL);
-}
-
-int	line_len(char *str)
-{
-	int i;
-	int	ret;
-
-	i = -1;
-	ret = 1;
-	while (str[++i])
-	{
-		if (str[i] <= '9' && str[i] >= '0')
-		{
-			ret++;
-			while (str[i] <= '9' && str[i] >= '0')
-				i++;
-		}
-	}
-	return (ret);
-}
-
-int *line_creator(char *str)
-{
-	int			i;
-	static char *str2 = NULL;
-	int			*tab;
-
-	i = 0;
-	if (!str2)
-		ft_strcpy(str2, str);
-	tab = malloc(line_len(str) * sizeof(int));
-	while (str2[i] != '\n' && str2[i])
-	{
-		tab[i] = atoi(str2);
-		i++;
-		str2 = next_int(str);
-		if (!str2)
-			break ;
-	}
-	return (tab);
-}
-
-int	**tab_creator(char *str)
+static int	wordcount(const char *s, char c, int opt, char **strs)
 {
 	int	i;
-	int tablen;
-	int	**tab;
+	int	count;
 
 	i = 0;
-	tablen = ft_tablen(str);
-	tab = malloc((tablen + 1) * sizeof(int *));
-	while (i <= tablen)
+	count = 0;
+	if (opt == 1)
 	{
-		tab[i] = line_creator(str);
+		while (s[i])
+		{
+			while (s[i] && s[i] == c)
+				i++;
+			if (s[i] && s[i] != c)
+				count++;
+			while (s[i] && s[i] != c)
+				i++;
+		}
+		return (count);
+	}
+	while (strs[i])
+	{
+		free(strs[i]);
 		i++;
 	}
-	return (tab);
+	free(strs);
+	return (1);
+}
+
+static int	wordlen(const char *s, char c, int i)
+{
+	int	i2;
+
+	i2 = 0;
+	while (s[i] && s[i] != c)
+	{
+		i++;
+		i2++;
+	}
+	return (i2);
+}
+
+static char	*putword(const char *str, char charset, int i)
+{
+	char	*rep;
+	int		len;
+	int		j;
+
+	j = 0;
+	if (!str)
+		return (NULL);
+	len = wordlen(str, charset, i);
+	rep = malloc(sizeof(char) * (len + 1));
+	if (!rep)
+		return (NULL);
+	while (str[i] && str[i] != charset)
+	{
+		rep[j] = str[i];
+		j++;
+		i++;
+	}
+	rep[j] = '\0';
+	return (rep);
+}
+
+static char	**split2(const char *str, char charset, int j, int i)
+{
+	char	**rep;
+
+	rep = NULL;
+	rep = malloc(sizeof(char *) * (wordcount(str, charset, 1, rep) + 1));
+	if (!rep)
+		return (NULL);
+	while (str[i] != '\0')
+	{
+		while (str[i] != '\0' && str[i] == charset)
+			i++;
+		if (str[i] != '\0')
+		{
+			rep[j] = putword(str, charset, i);
+			if (!rep[j++])
+				if (wordcount(str, charset, 0, rep))
+					return (NULL);
+		}
+		while (str[i] && str[i] != charset)
+			i++;
+	}
+	rep[j] = 0;
+	return (rep);
+}
+
+char	**ft_split(const char *str, char charset)
+{
+	char	**rep;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	if (!str)
+		return (NULL);
+	rep = NULL;
+	rep = split2(str, charset, j, i);
+	if (!rep)
+		return (NULL);
+	return (rep);
 }
 
 int32_t	graphical_main(char *name, char *str)
 {
 	mlx_t	*mlx;
-	int		**tab;
+	char	**tab;
 
-	tab = tab_creator(str);
+	tab = ft_split(str, '0');
     mlx = mlx_init(PIX_X, PIX_Y, name, true);
 	if (!mlx)
         exit(EXIT_FAILURE);
     g_img = mlx_new_image(mlx, 1  , 1);
 	memset(g_img->pixels, 255, g_img->width * g_img->height * sizeof(int));
-	make_draw1(mlx, g_img, 1000, 250);
-	make_draw2(mlx, g_img, 500, 500);
+	draw(mlx, g_img, 500, 500);
 	mlx_loop_hook(mlx, &hook, mlx);
 	mlx_loop(mlx);
 	mlx_terminate(mlx);
 	return (EXIT_SUCCESS);
 }
-/*
+
 int main(int argc, char **argv)
 {
     if (argc == 2)
     {
-        graphical_main((char *)&argv[0][2], "Hello");
+        graphical_main((char *)&argv[0][2], "0 0 0 0 10 0 0 2 5 1 0 0");
     }
     return (0);
 }
-*/
