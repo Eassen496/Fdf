@@ -31,7 +31,7 @@ char	*ft_strchr(const char *s, int c)
 	}
 	if (s[i] == (char)c)
 		return ((char *)&s[i]);
-	return (0);
+	return (NULL);
 }
 
 char	*ft_strjoin(char *s1, char *s2)
@@ -323,7 +323,7 @@ int main(int argc, char **argv)
             map = verif_map(fd);
             if (!map)
                 return (1);
-            //graphical_main((char *)&argv[0][2], map);
+            graphical_main((char *)&argv[0][2], map);
         }
         return (0);
     }
