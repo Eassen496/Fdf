@@ -61,6 +61,7 @@ void make_draw_x(int x, float y, char *str, mlx_t *mlx, mlx_image_t *g_img)
 			mlx_image_to_window(mlx, g_img, k, y);
 		}
 		mlx_image_to_window(mlx, g_img, k, y);
+		x = k;
 		str = strchr(str, ' ');
 		count++;
 	}
@@ -74,8 +75,8 @@ void	draw(mlx_t *mlx, mlx_image_t *g_img, char *str)
 	int	end;
 
 	i = 0;
-	x = 1000;
-	y = 250;
+	x = 750;
+	y = 50;
 	end = linecount(str);
 	while (i < end)
 	{

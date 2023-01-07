@@ -301,11 +301,13 @@ int	elem_verif(char *str)
 	int	j;
 	int	error;
 	int	line;
+	int	lim;
 
 	error = 0;
 	line = 0;
 	i = elem_count(str);
-	while (line < linecount(str))
+	lim = linecount(str);
+	while (line < lim)
 	{
 		j = elem_count(str);
 		if (i != j)
