@@ -10,6 +10,8 @@
 mlx_image_t	*g_img;
 
 char	*ft_strchr(const char *s, int c);
+int		elem_count(char *str);
+int		linecount(char *str);
 
 char	*ft_strcpy(char *destination, char *source)
 {
@@ -40,25 +42,27 @@ void	hook(void *param)
 void make_draw_x(int x, float y, char *str, mlx_t *mlx, mlx_image_t *g_img)
 {
 	float	k;
-	int		count;
 	float	j;
 	float	deltay;
+	int		count;
 
-	while (str)
+	count = 0;
+	while (count <= elem_count(str))
 	{
 		k = x + atoi(str);
-		count = 0;
 		mlx_image_to_window(mlx, g_img, x + atoi(str), y);
-		j = ((x + atoi(ft_strchr(str, ' ')) + 50) - k) / 50;
+		j = ((x + atoi(strchr(str, ' ')) + 50) - k) / 50;
 		deltay = (y - (y + 25)) / 50;
-		while (k < x + atoi(ft_strchr(str, ' ')) + 50)
+		while (k < x + atoi(strchr(str, ' ')) + 50)
 		{
+			//printf("%f %d\n", k, x + atoi(strchr(str, ' ')) + 50);
 			k += j;
 			y -= deltay;
 			mlx_image_to_window(mlx, g_img, k, y);
 		}
 		mlx_image_to_window(mlx, g_img, k, y);
-		str = ft_strchr(str, ' ');
+		str = strchr(str, ' ');
+		count++;
 	}
 }
 
@@ -67,14 +71,18 @@ void	draw(mlx_t *mlx, mlx_image_t *g_img, char *str)
 	int x;
 	int	y;
 	int i;
+	int	end;
 
 	i = 0;
 	x = 1000;
 	y = 250;
-	if (str)
+	end = linecount(str);
+	while (i < end)
 	{
 		make_draw_x(x, y, str, mlx, g_img);
 		i++;
+		y += 50;
+		x -= 25;
 	}
 }
 
