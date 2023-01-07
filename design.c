@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   design.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ale-roux <ale-roux@42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/07 16:41:51 by ale-roux          #+#    #+#             */
+/*   Updated: 2023/01/07 16:41:51 by ale-roux         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "MLX42/include/MLX42/MLX42.h"
 #include <stdlib.h>
@@ -45,23 +56,30 @@ void make_draw_x(int x, float y, char *str, mlx_t *mlx, mlx_image_t *g_img)
 	float	j;
 	float	deltay;
 	int		count;
+	int		lim;
+	int		count2;
 
 	count = 0;
-	while (count <= elem_count(str))
+	count2 = 0;
+	lim = elem_count(str);
+	while (count < lim)
 	{
 		k = x + atoi(str);
-		mlx_image_to_window(mlx, g_img, x + atoi(str), y);
+		mlx_image_to_window(mlx, g_img, k, y);
 		j = ((x + atoi(strchr(str, ' ')) + 50) - k) / 50;
 		deltay = (y - (y + 25)) / 50;
-		while (k < x + atoi(strchr(str, ' ')) + 50)
+		while (k <= x + atoi(strchr(str, ' ')) + 50)
 		{
 			//printf("%f %d\n", k, x + atoi(strchr(str, ' ')) + 50);
 			k += j;
 			y -= deltay;
+			count2++;
 			mlx_image_to_window(mlx, g_img, k, y);
 		}
-		mlx_image_to_window(mlx, g_img, k, y);
+		printf("%d\n", count2);
 		x = k;
+		if (str[0] == ' ')
+			str = &str[1];
 		str = strchr(str, ' ');
 		count++;
 	}
@@ -82,8 +100,6 @@ void	draw(mlx_t *mlx, mlx_image_t *g_img, char *str)
 	{
 		make_draw_x(x, y, str, mlx, g_img);
 		i++;
-		y += 50;
-		x -= 25;
 	}
 }
 
@@ -102,13 +118,3 @@ int32_t	graphical_main(char *name, char *str)
 	mlx_terminate(mlx);
 	return (EXIT_SUCCESS);
 }
-/*
-int main(int argc, char **argv)
-{
-    if (argc == 2)
-    {
-        graphical_main((char *)&argv[0][2], "0 0 0 0 10 0 0 2 5 1 0 0");
-    }
-    return (0);
-}
-*/
