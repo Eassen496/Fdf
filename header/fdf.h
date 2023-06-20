@@ -18,7 +18,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include "../MLX42/include/MLX42/MLX42.h"
 # include <memory.h>
 # define PIX_X 1920
 # define PIX_Y 1080
@@ -45,5 +44,44 @@ int             verif_extension(char *execname, char *filename);
 void            arg_error(int argc);
 int             isnl(char *str);
 int             ft_strcmp(char *s1, char *s2);
+int			    fdf_draw(t_fdf *fdf);
+void		    fdf_read(char *argv, t_fdf *fdf);
+
+typedef struct	s_mlx
+{
+	void	*init;
+	void	*win;
+	void	*img;
+}				t_mlx;
+
+typedef struct	s_image
+{
+	char	*data;
+	int		size;
+	int		endian;
+	int		bpp;
+}				t_image;
+
+typedef struct	s_map
+{
+	int		**values;
+	int		width;
+	int		height;
+	int		y0;
+	int		y1;
+	int		z0;
+	int		z1;
+	int		zoom;
+	double	x_value;
+	double	angle_y;
+	double	angle_z;
+}				t_map;
+
+typedef struct	s_fdf
+{
+	t_mlx	mlx;
+	t_map	map;
+	t_image	image;
+}				t_fdf;
 
 #endif
