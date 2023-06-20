@@ -31,7 +31,7 @@ int			fdf_main(char **argv)
 	fdf_read(argv[1], fdf);
 	fdf_init(fdf);
 	fdf->mlx.init = mlx_init();
-	fdf->mlx.win = mlx_new_window(fdf->mlx.init, WIN_WIDTH, WIN_HEIGHT, &name[0][2]);
+	fdf->mlx.win = mlx_new_window(fdf->mlx.init, PIX_X, PIX_Y, &name[0][2]);
 	mlx_hook(fdf->mlx.win, 2, 3, fdf_keys, fdf);
 	mlx_loop_hook(fdf->mlx.init, fdf_draw, fdf);
 	mlx_loop(fdf->mlx.init);
