@@ -32,7 +32,7 @@ int	main(int argc, char **argv)
 			map = verif_map(fd);
 			if (!map)
 				return (1);
-			graphical_main((char *)&argv[0][2], map);
+			graphical_main(argv, map);
 		}
 		return (0);
 	}
